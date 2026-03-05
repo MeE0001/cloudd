@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Database</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+.container{
+width:400px;
+margin:auto;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:8px;
+border-radius:5px;
+border:none;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:5px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#2563eb;
+}
+
+#result{
+margin-top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Student Database</h1>
+
+<div class="container">
+
+<h2>Add Student</h2>
+
+<input id="name" placeholder="Name">
+<input id="sap" placeholder="SAP ID">
+<input id="age" placeholder="Age">
+<input id="marks" placeholder="Marks">
+
+<br>
+
+<button onclick="addStudent()">Add Student</button>
+
+<hr>
+
+<h2>Find Student</h2>
+
+<input id="searchSap" placeholder="Enter SAP ID">
+
+<br>
+
+<button onclick="findStudent()">Search</button>
+
+<div id="result"></div>
+
+</div>
+
+
+<script>
+
+function addStudent(){
+
+let data = {
+name: document.getElementById("name").value,
+sap: document.getElementById("sap").value,
+age: document.getElementById("age").value,
+marks: document.getElementById("marks").value
+}
+
+fetch("/add_student",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(res=>res.json())
+.then(data=>{
+alert(data.message)
+})
+
+}
+
+function findStudent(){
+
+let sap = document.getElementById("searchSap").value
+
+fetch("/get_student/"+sap)
+.then(res=>res.json())
+.then(data=>{
+
+let result = document.getElementById("result")
+
+if(data.name){
+
+result.innerHTML = `
+<p>Name: ${data.name}</p>
+<p>Age: ${data.age}</p>
+<p>Marks: ${data.marks}</p>
+`
+
+}
+else{
+
+result.innerHTML = "<p>Student not found</p>"
+
+}
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
